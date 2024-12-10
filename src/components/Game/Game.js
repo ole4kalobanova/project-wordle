@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { sample } from '../../utils';
 import { WORDS } from '../../data';
@@ -8,19 +8,26 @@ import { NUM_OF_GUESSES_ALLOWED } from '../../constants';
 import { checkGuess } from '../../game-helpers';
 import WonBanner from '../WonBanner/WonBanner';
 import LostBanner from '../LostBanner/LostBanner';
-
-// Pick a random word on every pageload.
-const answer = sample(WORDS);
-// To make debugging easier, we'll log the solution in the console.
-console.info({ answer });
+import Button from '../Button/Button';
 
 function Game() {
   const [results, setResults] = useState([]);
   const [status, setStatus] = useState('running'); // won|lost|running
+  const [answer, setAnswer] = useState('');
 
-  const addNewWord = (value) => {
+  useEffect(() => {
+    const newAnswer = sample(WORDS);
+    setAnswer(newAnswer);
+  }, []);
+
+  useEffect(() => {
+    // To make debugging easier, we'll log the solution in the console.
+    console.info({ answer });
+  }, [answer]);
+
+  const handleSubmitGuess = (value) => {
     const checkedGuess = checkGuess(value, answer);
-    // Наличие уникального id в данной задаче избыточно, но он оставлен как пример 
+    // The unique ID in this task is unnecessary, but it is left as an example
     const nextResults = [...results, { id: crypto.randomUUID(), value: checkedGuess }];
     setResults(nextResults)
 
@@ -31,12 +38,19 @@ function Game() {
     }
   }
 
+  const handleRestartGame = () => {
+    const newAnswer = sample(WORDS);
+    setAnswer(newAnswer);
+    setResults([]);
+    setStatus('running');
+  }
+
   return (
     <>
       <GuessResults results={results} />
-      <GuessInput addNewWord={addNewWord} status={status !== 'running'} />
-      {status === 'won' && <WonBanner numOfGuesses={results.length} />}
-      {status === 'lost' && <LostBanner answer={answer} />}
+      <GuessInput handleSubmitGuess={handleSubmitGuess} status={status !== 'running'} />
+      {status === 'won' && <WonBanner numOfGuesses={results.length} action={handleRestartGame} />}
+      {status === 'lost' && <LostBanner answer={answer} action={handleRestartGame} />}
     </>
   );
 }

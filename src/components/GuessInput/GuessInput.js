@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function GuessInput({ addNewWord, status }) {
+function GuessInput({ handleSubmitGuess, status }) {
   const [inputData, setInputData] = useState('');
 
   return (
@@ -9,7 +9,7 @@ function GuessInput({ addNewWord, status }) {
       onSubmit={(e) => {
         e.preventDefault();
         
-        addNewWord(inputData);
+        handleSubmitGuess(inputData);
         setInputData('');
       }}
     >

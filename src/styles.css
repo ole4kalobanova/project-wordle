@@ -196,6 +196,21 @@ h1 {
   border: 0;
 }
 
+.restart-button {
+  background: var(--color-gray-300);
+  font-size: 1,5rem;
+  color: white;
+  border: 2px solid var(--color-gray-700);
+  border-radius: 4px;
+  padding: 8px 16px;
+  margin-top: 32px;
+  text-align: center;
+}
+
+.restart-button:hover {
+  border: 2px solid var(--color-gray-900);
+}
+
 /*
   Modal styles
 
