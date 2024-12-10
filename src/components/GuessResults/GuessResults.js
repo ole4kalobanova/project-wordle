@@ -4,7 +4,6 @@ import { NUM_OF_GUESSES_ALLOWED } from '../../constants';
 import Guess from '../Guess/Guess';
 
 function GuessResults({ results }) {
-  console.log({ results })
   return (
     <div className="guess-results">
       {

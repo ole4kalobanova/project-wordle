@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function GuessInput({ addNewWord }) {
+function GuessInput({ addNewWord, status }) {
   const [inputData, setInputData] = useState('');
 
   return (
@@ -8,7 +8,7 @@ function GuessInput({ addNewWord }) {
       className="guess-input-wrapper"
       onSubmit={(e) => {
         e.preventDefault();
-        console.log({ inputData });
+        
         addNewWord(inputData);
         setInputData('');
       }}
@@ -25,6 +25,7 @@ function GuessInput({ addNewWord }) {
         autoComplete="off"
         value={inputData}
         onChange={(e) => setInputData(e.target.value.toUpperCase())}
+        disabled={status}
       />
     </form>
   )

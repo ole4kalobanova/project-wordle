@@ -6,6 +6,8 @@ import GuessInput from '../GuessInput/GuessInput';
 import GuessResults from '../GuessResults/GuessResults';
 import { NUM_OF_GUESSES_ALLOWED } from '../../constants';
 import { checkGuess } from '../../game-helpers';
+import WonBanner from '../WonBanner/WonBanner';
+import LostBanner from '../LostBanner/LostBanner';
 
 // Pick a random word on every pageload.
 const answer = sample(WORDS);
@@ -14,17 +16,27 @@ console.info({ answer });
 
 function Game() {
   const [results, setResults] = useState([]);
+  const [status, setStatus] = useState('running'); // won|lost|running
 
   const addNewWord = (value) => {
-    if (results.length >= NUM_OF_GUESSES_ALLOWED) return;
+    const checkedGuess = checkGuess(value, answer);
+    // Наличие уникального id в данной задаче избыточно, но он оставлен как пример 
+    const nextResults = [...results, { id: crypto.randomUUID(), value: checkedGuess }];
+    setResults(nextResults)
 
-    setResults([...results, { id: crypto.randomUUID(), value: checkGuess(value, answer) }])
+    if (value === answer) {
+      setStatus('won')
+    } else if (nextResults.length === NUM_OF_GUESSES_ALLOWED) {
+      setStatus('lost');
+    }
   }
 
   return (
     <>
-      <GuessResults results={results} answer={answer} />
-      <GuessInput addNewWord={addNewWord} />
+      <GuessResults results={results} />
+      <GuessInput addNewWord={addNewWord} status={status !== 'running'} />
+      {status === 'won' && <WonBanner numOfGuesses={results.length} />}
+      {status === 'lost' && <LostBanner answer={answer} />}
     </>
   );
 }
